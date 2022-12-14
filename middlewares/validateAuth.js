@@ -1,0 +1,31 @@
+import jwt from "jsonwebtoken"; // JWT
+
+/**
+ * Este middleware intercepta las solicitudes HTTP y comprueba si existe un token JWT en la cabecera.
+ * Si existe, deja pasar la petición a los demás enrutadores, si no existe, enviará una respuesta al cliente.
+ */
+export function validateAuth(req, res, next) {
+  const token = req.headers["authorization"];
+
+  // Si existe el token..
+  if (token) {
+    if (validateJWT(token)) next(); // Si el token no es válido
+    else res.sendStatus(403); // Si el token no es válido
+
+    // Si no existe el token
+  } else {
+    res.sendStatus(403);
+  }
+}
+
+function validateJWT(token, res) {
+  let result = false;
+
+  jwt.verify(token, process.env.SIGN_JWT, (err, data) => {
+    if (data) result = true;
+  });
+
+  return result;
+}
+
+export default validateAuth;
