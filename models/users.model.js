@@ -12,7 +12,11 @@ export async function getUserByEmail(email) {
 export async function getAllUsers() {
   const [result] = await conexion.query(
     "select idUsuario, nombre, apellidos, dni, telefono, email, localidad, provincia, cPostal, (select date_format(fechaAlta, '%d/%m/%Y')) as fechaAlta, (select date_format(fechaNacimiento, '%d-%m-%Y')) as fechaNacimiento, rolUsuario, rutaImagen from USUARIOS"
-
   );
+  return result;
+}
+
+export async function deleteUserDB(id) {
+  const [result] = await conexion.query("DELETE FROM USUARIOS WHERE idUsuario = ?", [id]);
   return result;
 }
