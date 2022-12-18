@@ -1,4 +1,5 @@
-import {config} from 'dotenv'
-config()
+import { config } from "dotenv";
 
-/** Configura las variables de entorno definidas en el archivo .env del servidor */
+config();
+
+/** Configurar variables de entorno del servidor */

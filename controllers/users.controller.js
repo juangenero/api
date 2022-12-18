@@ -1,4 +1,4 @@
-import { deleteUserDB, getAllUsers } from "../models/users.model.js";
+import { deleteUserDB, getAllUsers, resetUsersDB } from "../models/users.model.js";
 
 export async function getUsers(req, res) {
   const users = await getAllUsers(); // Método del modelo
@@ -10,4 +10,9 @@ export async function deleteUser(req, res) {
   console.log(req.body)
   const result = await deleteUserDB(id);
   res.json(result);
+}
+
+export async function resetUsers(req, res){
+  const result = await resetUsersDB();
+  res.json(result)
 }
