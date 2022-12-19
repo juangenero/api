@@ -7,7 +7,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD || "1234";
 const DB_PORT = process.env.DB_PORT || 3306;
 const DB_NAME = process.env.DB_NAME || "pet_doctor";
 
-console.log("Config DB: "+ DB_HOST + ":" + DB_PORT + "@" + DB_USER + "_" + DB_PASSWORD + "/" + DB_NAME);
+//console.log("Config DB: "+ DB_HOST + ":" + DB_PORT + "@" + DB_USER + "_" + DB_PASSWORD + "/" + DB_NAME);
 
 // CreatePool mantiene las conexiones abiertas para que sean reutilizadas y las cierra automáticamente cuando llevan un tiempo determinado sin ser usadas.
 export const connect = createPool({
