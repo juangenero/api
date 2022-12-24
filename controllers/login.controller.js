@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"; // JWT
-import { getUserByEmail } from "../models/users.model.js";
+import { getUserByEmailDB } from "../models/users.model.js";
 
 export function login(req, res) {
   const email = req.body.username; // En el cliente este valor es "username" pero en el backend es "email"
@@ -12,7 +12,7 @@ export function login(req, res) {
     // Si los campos del formulario NO están vacíos
   } else {
     // Obtener el usuario de la BD
-    getUserByEmail(email)
+    getUserByEmailDB(email)
       .then((user) => {
         // Si el usuario existe y la contraseña es correcta
         if (user && user.clave == password) {
