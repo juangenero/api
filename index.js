@@ -15,7 +15,7 @@ const app = express(); // Crear servidor
 // Middlewares
 app.use(cors()); // Permitir CORS en las peticiones
 app.use(morgan(":method :url :status :req[header] :res[header]")); // Analizar cabeceras
-app.use(express.json()); // Procesar archivos JSON
+app.use(express.json({ limit: "2 mb" })); // Procesar archivos JSON
 //app.use(express.urlencoded({ extended: false })); // Procesar formularios
 
 // rutas

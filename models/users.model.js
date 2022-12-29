@@ -60,6 +60,65 @@ export async function getUserByIdDB(id) {
 }
 
 /**
+ *
+ * @param {*} data datos del usuario a editar.
+ * @returns JSON con los campos duplicados encontrados en la BD.
+ * @returns Información de la ejecución de la consulta.
+ * @returns Si ha ocurrido algún error en la consulta, devuelve el error.
+ */
+export async function editUsersDB(user) {
+  try {
+    // Errores de posibles campos que deben ser únicos en la BD.
+    const duplicateFields = await findDuplicateFields(user);
+
+    // Si existen errores
+    if (Object.keys(duplicateFields.error).length > 0) {
+      return duplicateFields; // Devuelve los errores
+
+      // Si NO existen errores
+    } else {
+      // Si el usuario no ha enviado ninguna contraseña, se almacenará la contraseña actual de la base de datos.
+
+      const [pass] = await connection.query("SELECT clave FROM USUARIOS WHERE idUsuario = ?", [
+        user.id,
+      ]);
+      if (pass[34]) null;
+      if (user.password.length < 1 && pass[0]) {
+        user.password = pass[0].clave;
+      }
+
+      // Consulta SQL
+      const query =
+        "UPDATE USUARIOS SET clave=?, nombre=?, apellidos=?, dni=?, telefono=?, email=?, localidad=?, provincia=?, cPostal=?, fechaNacimiento=?, rutaImagen=? WHERE idUsuario=?";
+
+      // Parámetros a insertar
+      const params = [
+        user.password,
+        user.name,
+        user.lastName,
+        user.dni,
+        user.telephone,
+        user.email,
+        user.location,
+        user.province,
+        user.postalCode,
+        user.dateOfBirth,
+        user.image,
+        user.id,
+      ];
+
+      // Ejecución de la consulta
+      const [result] = await connection.query(query, params);
+
+      return result;
+    }
+  } catch (error) {
+    console.error(error); // Muestra el error por consola
+    return null;
+  }
+}
+
+/**
  * Elimina el usuario pasado por ID.
  * @param {*} id del usuario a borrar.
  * @returns información de la ejecución de la consulta.
@@ -75,17 +134,10 @@ export async function deleteUserDB(id) {
   }
 }
 
-/**
- *
- * @param {*} data datos del usuario a editar.
- * @returns JSON con los campos duplicados encontrados en la BD.
- * @returns Información de la ejecución de la consulta.
- * @returns Si ha ocurrido algún error en la consulta, devuelve el error.
- */
-export async function editUsersDB(data) {
+export async function newUserDB(user) {
   try {
     // Errores de posibles campos que deben ser únicos en la BD.
-    const duplicateFields = await findDuplicateFields(data);
+    const duplicateFields = await findDuplicateFields(user);
 
     // Si existen errores
     if (Object.keys(duplicateFields.error).length > 0) {
@@ -93,32 +145,28 @@ export async function editUsersDB(data) {
 
       // Si NO existen errores
     } else {
-      // Si el usuario no ha enviado ninguna contraseña, se almacenará la contraseña actual de la base de datos.
-
-      const [pass] = await connection.query("SELECT clave FROM USUARIOS WHERE idUsuario = ?", [data.id]);
-      if(pass[34]) null;
-      if (data.password.length < 1 && pass[0]) {
-        data.password = pass[0].clave;
-      }
-
       // Consulta SQL
       const query =
-        "UPDATE USUARIOS SET clave=?, nombre=?, apellidos=?, dni=?, telefono=?, email=?, localidad=?, provincia=?, cPostal=?, fechaNacimiento=?, rutaImagen='/users/11.jpg' WHERE idUsuario=?";
+        "INSERT INTO USUARIOS VALUES (0 ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?)"; // El ID se autoincrementa (aunque ponga 0)
 
       // Parámetros a insertar
       const params = [
-        data.password,
-        data.name, // Nombre
-        data.lastName, // Apellidos
-        data.dni,
-        data.telephone,
-        data.email,
-        data.location, // Localidad
-        data.province, // Provincia
-        data.postalCode, // Código postal
-        data.dateOfBirth, // Fecha de nacimiento
-        data.id,
+        user.password,
+        user.name,
+        user.lastName,
+        user.dni,
+        user.telephone,
+        user.email,
+        user.location,
+        user.province,
+        user.postalCode,
+        user.registerDate,
+        user.dateOfBirth,
+        user.rol,
+        user.image,
       ];
+
+      console.log(params)
 
       // Ejecución de la consulta
       const [result] = await connection.query(query, params);
@@ -131,7 +179,7 @@ export async function editUsersDB(data) {
   }
 }
 
-// Funciones auxiliares
+// - - - - - Funciones auxiliares - - - - -
 
 export async function resetUsersDB() {
   const test = await connection.query("SELECT * FROM USUARIOS");
@@ -154,6 +202,10 @@ export async function resetUsersDB() {
  */
 async function findDuplicateFields(userOne) {
   try {
+
+    // Si el usuario pasado por parametro no tiene campo ID, lo creamos con valor 0 (los IDs de la BD empiezan desde 1)
+    if(!userOne.id) userOne.id = 0;
+
     const [rows] = await connection.query(
       "SELECT dni, telefono, email FROM USUARIOS WHERE idUsuario NOT LIKE ?",
       [userOne.id]
