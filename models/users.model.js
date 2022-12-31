@@ -113,7 +113,7 @@ export async function editUsersDB(user) {
       return result;
     }
   } catch (error) {
-    console.error(error); // Muestra el error por consola
+    console.error(error.message); // Muestra el error por consola
     return null;
   }
 }
@@ -166,8 +166,6 @@ export async function newUserDB(user) {
         user.image,
       ];
 
-      console.log(params)
-
       // Ejecución de la consulta
       const [result] = await connection.query(query, params);
 
@@ -187,7 +185,7 @@ export async function resetUsersDB() {
   // Si no existen usuarios, los resetea
   if (test[0].length == 1) {
     const [result] = await connection.query(
-      "INSERT INTO USUARIOS VALUES (0,md5('Pedro123'),'Pedro','Marín Rivas','38472958B','693650105','pedro.rivas@gmail.com','Alcalá de Guadaira','Sevilla',40403,'2022-1-15','1992-6-25',0,'/users/1.jpg'),(0,md5('Angel123'),'Ángel','Sanchez Pedrosa','92746526B','739274615','angel.sanchez@gmail.com','Lebrija','Sevilla',40209,'2022-2-16','1982-7-20',0,'/users/2.jpg'),(0,md5('Ana123'),'Ana','Espinosa de los Monteros','13579782C','603819574','ana.espinosa@gmail.com','Castillejo','Sevilla',40403,'2022-3-17','1972-8-30',0,'/users/3.jpg')"
+      "INSERT INTO USUARIOS VALUES (0,md5('Pedro123'),'Pedro','Marín Rivas','38472958B','693650105','pedro.rivas@gmail.com','Alcalá de Guadaira','Sevilla',40403,'2022-1-15','1992-6-25',0, null),(0,md5('Angel123'),'Ángel','Sanchez Pedrosa','92746526B','739274615','angel.sanchez@gmail.com','Lebrija','Sevilla',40209,'2022-2-16','1982-7-20',0, null),(0,md5('Ana123'),'Ana','Espinosa de los Monteros','13579782C','603819574','ana.espinosa@gmail.com','Castillejo','Sevilla',40403,'2022-3-17','1972-8-30',0, null)"
     );
 
     return result;
