@@ -7,6 +7,7 @@ import validateAuth from "./middlewares/validateAuth.js"; // Importar Middleware
 // Importar enrutadores
 import loginRoute from "./routes/login.route.js";
 import usersRoute from "./routes/users.route.js";
+import vaccinesRoute from "./routes/vaccines.route.js";
 
 const app = express(); // Crear servidor
 
@@ -19,6 +20,7 @@ app.use(express.json({ limit: "3 mb" })); // Procesar archivos JSON de 3 MB como
 app.use(loginRoute);
 app.use(validateAuth); // La rutas posteriores a este middleware necesitaran un usuario autenticado
 app.use(usersRoute);
+app.use(vaccinesRoute);
 
 // Iniciar servidor
 app.listen(process.env.PORT, () => {
