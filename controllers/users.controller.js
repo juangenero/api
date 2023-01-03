@@ -1,7 +1,7 @@
 import {
   getAllUsersDB,
   getUserByIdDB,
-  editUsersDB,
+  editUserDB,
   deleteUserDB,
   newUserDB,
   resetUsersDB,
@@ -51,7 +51,7 @@ export async function getUser(req, res) {
  * @param {*} res Respuesta del servidor.
  */
 export async function editUser(req, res) {
-  const result = await editUsersDB(req.body);
+  const result = await editUserDB(req.body);
 
   if (result === null) {
     res.status(500).json({ error: "Ocurrió un error interno en el servidor" });

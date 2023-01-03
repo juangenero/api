@@ -66,7 +66,7 @@ export async function getUserByIdDB(id) {
  * @returns Información de la ejecución de la consulta.
  * @returns Si ha ocurrido algún error en la consulta, devuelve el error.
  */
-export async function editUsersDB(user) {
+export async function editUserDB(user) {
   try {
     // Errores de posibles campos que deben ser únicos en la BD.
     const duplicateFields = await findDuplicateFields(user);
@@ -82,7 +82,7 @@ export async function editUsersDB(user) {
       const [pass] = await connection.query("SELECT clave FROM USUARIOS WHERE idUsuario = ?", [
         user.id,
       ]);
-      if (pass[34]) null;
+
       if (user.password.length < 1 && pass[0]) {
         user.password = pass[0].clave;
       }
@@ -146,8 +146,7 @@ export async function newUserDB(user) {
       // Si NO existen errores
     } else {
       // Consulta SQL
-      const query =
-        "INSERT INTO USUARIOS VALUES (0 ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?)"; // El ID se autoincrementa (aunque ponga 0)
+      const query = "INSERT INTO USUARIOS VALUES (0 ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?)"; // El ID se autoincrementa (aunque ponga 0)
 
       // Parámetros a insertar
       const params = [
@@ -200,9 +199,8 @@ export async function resetUsersDB() {
  */
 async function findDuplicateFields(userOne) {
   try {
-
     // Si el usuario pasado por parametro no tiene campo ID, lo creamos con valor 0 (los IDs de la BD empiezan desde 1)
-    if(!userOne.id) userOne.id = 0;
+    if (!userOne.id) userOne.id = 0;
 
     const [rows] = await connection.query(
       "SELECT dni, telefono, email FROM USUARIOS WHERE idUsuario NOT LIKE ?",
