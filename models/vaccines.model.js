@@ -53,6 +53,22 @@ export async function editVaccineDB(vaccine) {
   }
 }
 
+/**
+ * Elimima una vacuna
+ * @param {Integer} id de la vacuna
+ * @returns Resultado de la ejecución de la consulta
+ * @returns null si ha habido algún error en la ejecución de la consulta
+ */
+export async function deleteVaccineDB(id){
+  try {
+    const [rows] = await connection.query("DELETE FROM VACUNAS WHERE idVacuna = ?", [id]);
+    return rows;
+  } catch (error) {
+    console.error(error.message); // Muestra el error por consola
+    return null;
+  }
+}
+
 // Funciones auxiliares
 
 /**
@@ -67,8 +83,9 @@ async function findDuplicateFields(vaccineOne) {
     const [rows] = await connection.query("SELECT vacuna FROM VACUNAS WHERE idVacuna NOT LIKE ?",[vaccineOne.id]);
     let result = false;
 
+    // Si alguna vacuna de la BD coincide con la introducida con el cliente, result será true
     rows.map((vaccineSecond) => {
-      if (vaccineOne.nombre === vaccineSecond.vacuna) result = true;
+      if (vaccineOne.nombre.toLowerCase() === vaccineSecond.vacuna.toLowerCase()) result = true;
     });
 
     return result;

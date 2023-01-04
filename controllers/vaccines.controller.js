@@ -1,4 +1,4 @@
-import { getAllVaccinesDB, getVaccineByIdDB, editVaccineDB } from "../models/vaccines.model.js";
+import { getAllVaccinesDB, getVaccineByIdDB, editVaccineDB, deleteVaccineDB } from "../models/vaccines.model.js";
 
 export async function getAllVaccines(req, res) {
   const vaccines = await getAllVaccinesDB(); // Método del modelo
@@ -31,4 +31,13 @@ export async function editVaccine(req, res) {
   } else {
     res.json(result);
   }
+}
+
+export async function deleteVaccine(req, res) {
+  const result = await deleteVaccineDB(req.params.id); // Método del modelo
+
+  // Si se ha ejecutado la consulta
+  if (result) res.json(result); // Devuelve información de la ejecución de dicha consulta
+  // Si ha habido algún error en la consulta
+  else res.status(500).json({ error: "Ocurrió un error interno en el servidor" }); // Devuelve un mensaje de error
 }

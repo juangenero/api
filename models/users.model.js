@@ -211,7 +211,7 @@ async function findDuplicateFields(userOne) {
 
     // Comprobar dni duplicado en la BD.
     rows.map((userSecond) => {
-      if (userOne.dni == userSecond.dni) errors.error.dni = "duplicate";
+      if (userOne.dni.toLowerCase() == userSecond.dni.toLowerCase()) errors.error.dni = "duplicate";
     });
 
     // Comprobar teléfono duplicado en la BD.
@@ -221,7 +221,7 @@ async function findDuplicateFields(userOne) {
 
     // Comprobar email duplicado en la BD.
     rows.map((userSecond) => {
-      if (userOne.email == userSecond.email) errors.error.email = "duplicate";
+      if (userOne.email.toLowerCase() == userSecond.email.toLowerCase()) errors.error.email = "duplicate";
     });
 
     return errors;
