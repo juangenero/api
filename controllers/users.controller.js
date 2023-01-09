@@ -78,6 +78,14 @@ export async function deleteUser(req, res) {
   else res.status(500).json({ error: "Ocurrió un error interno en el servidor" }); // Devuelve un mensaje de error
 }
 
+/**
+ * Añade un usuario a la base de datos, responde con:
+ * - Mensaje de error interno en el servidor.
+ * - Mensaje de error (campos duplicados en la BD)
+ * - JSON con la información de la ejecución.
+ * @param {*} req Solicitud del cliente.
+ * @param {*} res Respuesta del servidor.
+ */
 export async function newUser(req, res) {
   const result = await newUserDB(req.body);
   res.json(result);

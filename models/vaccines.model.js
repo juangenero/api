@@ -1,5 +1,10 @@
 import { connection } from "../configs/db.js";
 
+/**
+ * Obtiene todas las vacunas de la base de datos.
+ * @returns Array de vacunas
+ * @returns Null se si ha producido un error
+ */
 export async function getAllVaccinesDB() {
   try {
     const [rows] = await connection.query("SELECT * FROM VACUNAS");
@@ -10,6 +15,11 @@ export async function getAllVaccinesDB() {
   }
 }
 
+/**
+ * Obtiene una vacuna a través de su ID
+ * @param {Integer} id de la vacuna
+ * @returns vacuna de la BD
+ */
 export async function getVaccineByIdDB(id) {
   try {
     const [rows] = await connection.query("SELECT * FROM VACUNAS WHERE idVacuna = ?", [id]);
@@ -22,7 +32,7 @@ export async function getVaccineByIdDB(id) {
 }
 
 /**
- * 
+ *
  * @param {JSON} vaccine Vacuna enviada por el cliente
  * @returns JSON con error si el campos nombre está duplicado
  * @returns resultados de la consulta si todo a ido bien
@@ -30,12 +40,12 @@ export async function getVaccineByIdDB(id) {
  */
 export async function editVaccineDB(vaccine) {
   try {
-    // Errores de posibles campos que deben ser únicos en la BD.
+    // Posibles errores de campos que deben ser únicos en la BD.
     const nameDuplicate = await findDuplicateFields(vaccine);
 
     // Si el nombre está duplicado
     if (nameDuplicate != null && nameDuplicate) {
-      return { error: "Ya existe una vacuna llamada " + vaccine.nombre +"." }; // Devuelve los errores
+      return { error: "Ya existe una vacuna llamada " + vaccine.nombre + "." }; // Devuelve los errores
 
       // Si NO existen errores
     } else {
@@ -59,12 +69,42 @@ export async function editVaccineDB(vaccine) {
  * @returns Resultado de la ejecución de la consulta
  * @returns null si ha habido algún error en la ejecución de la consulta
  */
-export async function deleteVaccineDB(id){
+export async function deleteVaccineDB(id) {
   try {
     const [rows] = await connection.query("DELETE FROM VACUNAS WHERE idVacuna = ?", [id]);
     return rows;
   } catch (error) {
     console.error(error.message); // Muestra el error por consola
+    return null;
+  }
+}
+
+/**
+ * Añade una vacuna a la BD
+ * @param {JSON} vaccine Vacuna en formato JSON
+ * @returns Resultado de la ejecución de la consulta, null o JSON con errores de campos duplicados.
+ */
+export async function newVaccineDB(vaccine) {
+  try {
+    // Posibles errores de campos que deben ser únicos en la BD.
+    const nameDuplicate = await findDuplicateFields(vaccine);
+
+    // Si el nombre está duplicado
+    if (nameDuplicate != null && nameDuplicate) {
+      return { error: "Ya existe una vacuna llamada " + vaccine.nombre + "." }; // Devuelve los errores
+
+      // Si NO existen errores
+    } else {
+      // Ejecución de la consulta
+      const [result] = await connection.query("INSERT INTO VACUNAS VALUES (0, ?, ?)", [
+        vaccine.nombre,
+        vaccine.observaciones,
+      ]);
+
+      return result;
+    }
+  } catch (error) {
+    console.error(error); // Muestra el error por consola
     return null;
   }
 }
@@ -80,7 +120,12 @@ export async function deleteVaccineDB(id){
  */
 async function findDuplicateFields(vaccineOne) {
   try {
-    const [rows] = await connection.query("SELECT vacuna FROM VACUNAS WHERE idVacuna NOT LIKE ?",[vaccineOne.id]);
+    // Si la vacuna pasada por parametro no tiene campo ID, lo creamos con valor 0 (los IDs de la BD empiezan desde 1)
+    if (!vaccineOne.id) vaccineOne.id = 0;
+
+    const [rows] = await connection.query("SELECT vacuna FROM VACUNAS WHERE idVacuna NOT LIKE ?", [
+      vaccineOne.id,
+    ]);
     let result = false;
 
     // Si alguna vacuna de la BD coincide con la introducida con el cliente, result será true
