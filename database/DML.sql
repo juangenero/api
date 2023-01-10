@@ -232,7 +232,7 @@ VALUES
         '2019-8-26',
         14.2,
         '',
-        '/pets/1.png'
+        null
     ),
     (
         0,
@@ -246,7 +246,7 @@ VALUES
         '2018-2-10',
         18,
         'Se encuentra castrado',
-        '/pets/2.png'
+        null
     ),
     (
         0,
@@ -260,7 +260,7 @@ VALUES
         '2017-3-3',
         15.3,
         null,
-        '/pets/3.png'
+        null
     ),
     (
         0,
@@ -274,7 +274,7 @@ VALUES
         '2018-2-22',
         12.3,
         'Se encuentra castrado',
-        '/pets/4.png'
+        null
     ),
     (
         0,
@@ -288,7 +288,7 @@ VALUES
         '2019-4-24',
         17.4,
         null,
-        '/pets/5.png'
+        null
     ),
     (
         0,
@@ -302,7 +302,7 @@ VALUES
         '2015-10-15',
         19.2,
         'Tiene una lesión en la pata izquierrda',
-        '/pets/6.png'
+        null
     ),
     (
         0,
@@ -316,7 +316,7 @@ VALUES
         '2019-5-14',
         11.9,
         null,
-        '/pets/7.png'
+        null
     ),
     (
         0,
@@ -330,7 +330,7 @@ VALUES
         '2016-2-20',
         6.2,
         'Se encuentra castrado',
-        '/pets/8.png'
+        null
     ),
     (
         0,
@@ -344,7 +344,7 @@ VALUES
         '2021-3-0',
         0.9,
         'Es muy asustadiza',
-        '/pets/9.png'
+        null
     );
 
 /* AÑADIR CONSULTAS */

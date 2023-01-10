@@ -21,11 +21,11 @@ CREATE TABLE IF NOT EXISTS USUARIOS(
     cPostal INT,
     fechaAlta DATE NOT NULL,
     fechaNacimiento DATE,
+    /* Nivel 0 serán los clientes y nivel 1 los veterinarios */
     rolUsuario INT NOT NULL CHECK (
         rolUsuario BETWEEN 0
         AND 1
     ),
-    /* Nivel 0 serán los clientes y nivel 1 los veterinarios */
     rutaImagen LONGTEXT
 );
 
@@ -36,13 +36,13 @@ CREATE TABLE IF NOT EXISTS MASCOTAS(
     nombre VARCHAR(50) NOT NULL,
     especie VARCHAR(30) NOT NULL,
     raza VARCHAR(30),
-    sexo ENUM('macho', 'hembra'),
-    peso FLOAT(6) NOT NULL,
-    fechaAlta DATE NOT NULL DEFAULT(sysdate()),
+    sexo ENUM('Macho', 'Hembra'),
+    peso FLOAT(6),
+    fechaAlta DATE NOT NULL,
     fechaNacimiento DATE,
-    altura FLOAT(6) NOT NULL,
+    altura FLOAT(6),
     comentarios VARCHAR(250),
-    rutaImagen VARCHAR(150),
+    rutaImagen LONGTEXT,
     CONSTRAINT USU_id_FK FOREIGN KEY (idUsuario) REFERENCES USUARIOS (idUsuario) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -52,13 +52,15 @@ CREATE TABLE IF NOT EXISTS CONSULTAS(
     idMascota INT,
     idUsuario INT,
     /* Veterinario que atienda la consulta */
-    fecha DATE NOT NULL DEFAULT(sysdate()),
-    hora TIME NOT NULL DEFAULT(sysdate()),
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
     diagnostico VARCHAR(250) NOT NULL,
     tratamiento VARCHAR(250),
     observaciones VARCHAR(250),
     CONSTRAINT MAS_id_FK FOREIGN KEY (idMascota) REFERENCES MASCOTAS (idMascota) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT USU_id_FK2 FOREIGN KEY (idUsuario) REFERENCES USUARIOS (idUsuario) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT USU_id_FK2 FOREIGN KEY (idUsuario) REFERENCES USUARIOS (idUsuario) ON DELETE
+    SET
+        NULL ON UPDATE CASCADE
 );
 
 /* TABLA VACUNAS */
@@ -72,7 +74,7 @@ CREATE TABLE IF NOT EXISTS VACUNAS(
 CREATE TABLE IF NOT EXISTS APLICA(
     idMascota INT,
     idVacuna INT,
-    fecha DATE NOT NULL DEFAULT(sysdate()),
+    fecha DATE NOT NULL,
     CONSTRAINT APL_fec_PK PRIMARY KEY (idMascota, idVacuna, fecha),
     CONSTRAINT MAS_id_FK2 FOREIGN KEY (idMascota) REFERENCES MASCOTAS (idMascota) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT APL_id_FK FOREIGN KEY (idVacuna) REFERENCES VACUNAS (idVacuna) ON DELETE CASCADE ON UPDATE CASCADE
